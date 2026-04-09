@@ -863,18 +863,25 @@ address { font-style: normal; }
   flex-direction: column;
 }
 
-.portfolio-icon {
-  width: 54px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-border);
-  border-radius: var(--radius-sm);
-  color: var(--accent);
-  margin-bottom: 18px;
-  flex-shrink: 0;
+/* Screenshot preview strip — sits between browser bar and card body */
+.portfolio-screenshot-wrap {
+  overflow: hidden;
+  height: 195px;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+
+.portfolio-screenshot {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.55s ease;
+}
+
+.portfolio-card:hover .portfolio-screenshot {
+  transform: scale(1.04);
 }
 
 .portfolio-card h3 {

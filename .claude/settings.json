@@ -8,7 +8,13 @@
       "Bash(where py:*)",
       "Bash(python -c ':*)",
       "Bash(powershell -File -)",
-      "Bash(\"C:/Program Files/Git/mingw64/bin/pdftotext.exe\" \"d:/Digital Downtown Main/DDM Website/Digital Downtown Main Privacy - ToS.pdf\" -)"
+      "Bash(\"C:/Program Files/Git/mingw64/bin/pdftotext.exe\" \"d:/Digital Downtown Main/DDM Website/Digital Downtown Main Privacy - ToS.pdf\" -)",
+      "Bash(where chrome:*)",
+      "Bash(where msedge:*)",
+      "Bash(npx --yes puppeteer --version)",
+      "Bash(npx playwright:*)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Read(//c/Program Files/Microsoft/Edge/Application/**)"
     ]
   }
 }
