@@ -1,0 +1,110 @@
+﻿Basic Info
+Business Name: Digital Downtown Main
+Business Phone: 314-753-2893
+Business Email: bret@digitaldowntownmain.com
+Domain: www.digitaldowntownmain.com
+Business Hours: 8:30 - 5:30 Monday - Friday
+Address: 4819 Plum Tree Ln. Hazelwood MO 63042
+
+
+What this business offers:
+Digital Downtown Main is a local St. Louis company that helps small businesses build a substantial online presence that will generate leads all on its own. DDM specializes in tailor made websites that are built from the ground up to capitalize on SEO and GEO organic lead generation. 
+
+
+Color Palette:
+#ffffff
+#16110a
+#022b3e
+#21c3d8
+
+
+Fonts:
+Arial MT Pro
+TT NORMS
+Claude Prompt
+1. Act as my expert Front-End Developer. I need you to generate the complete HTML and CSS for a single-page agency site called "Digital Downtown Main".
+2. Make sure to read frontend-design.md at D:\Digital Downtown Main\Claude Skills\frontend-design.md
+3. Make sure to read the SEO_GEO Blueprint attached
+4. Save all items to D:\Digital Downtown Main\DDM Website
+5. Use Digital Down png as Logo and the Hero Banner Arch Photo as the hero banner.
+6. Design Strategy (The "SaaS / Tech Startup" Vibe):
+7. The design inspiration for this site is high-end SaaS platforms. We want a modern, clean, "app-like" interface.
+8. Use ample negative space so the content breathes.
+9. Floating Elements: Cards and containers should look like sleek, floating UI panels. Use subtle borders (1px solid rgba(255, 255, 255, 0.1)) and soft shadow effects rather than flat boxes.
+10. Typography: Keep the headers bold and oversized.
+11. 12. Brand Guidelines (Strictly Enforce):
+13. Background: #16110a 
+14. Card/Section Break Background: #022b3e 
+15. Primary Action/Accent: #21c3d8 
+16. Text Color: #ffffff 
+17. Heading Font: TT NORMS (Include sans-serif fallback) 
+18. Body Font: Arial MT Pro (Include sans-serif fallback) 
+19. Do NOT use any external CSS frameworks like Tailwind. Write clean, vanilla CSS.
+20. 21. Architectural Flow to Build (Top to Bottom):
+22. 1. Hero Section
+23. Design Intent: A commanding top-of-the-fold experience. Use the deep #16110a background. Include a high-contrast headline, a sub-headline, and a vibrant #21c3d8 CTA button that anchors the user's attention.
+24. Content: Headline: "Stop losing local leads to outdated websites." Sub-headline: "High-converting, AI-optimized digital storefronts without the bloated agency price tag." 
+25. 26. 2. What We Do (Bullet Point Section)
+27. Design Intent: A clean, scannable list or grid of core value propositions. Use #022b3e as the section background to visually separate it from the Hero.
+28. Content: Highlight the "Flat $500 setup and $279/mo concierge retainer". Include bullet points for: Tailored Digital Architecture (SEO/GEO optimization), The Conversion Engine (automated scheduling/routing), Enterprise-Grade Vault (Netlify global edge hosting), and Trust Protocols (SPF/DKIM/DMARC).
+29. 30. 3. The Data (Visual Stats Section)
+31. Design Intent: A high-contrast, 3-column data visualization. Emulate a clean SaaS analytics dashboard with oversized typography for the numbers.
+32. Content: * Stat 1: "46%" / "Local Intent" / "Almost half of all Google searches have local intent."
+33. Stat 2: "97%" / "Search First" / "97% of consumers search online to find a local business."
+34. Stat 3: "3x" / "Conversion Rate" / "Hyper-local sites convert at 3x the rate of generic websites."
+35. 36. 4. Proof (Portfolio Section)
+37. Design Intent: A sleek grid of floating project cards. Each card should have a "browser bar" UI at the top (three little dots like a Mac window) to make it look like a digital software product.
+38. Content: Create 6 hyperlinked cards using these titles and URLs: Auto Detailing (https://autodetailingtemplate.netlify.app/), Home Services (https://homeservicetemplate.netlify.app/), Mobile Food Vendor (https://mobilefoodvendor.netlify.app/), Property Maintenance (https://propertymaintenancetemplate.netlify.app/), Wellness & Spa (https://wellnesstemplate.netlify.app/), Independent Pro (https://independentprofessional.netlify.app/).
+39. 40. 5. Contact Form
+41. Design Intent: A beautifully staged, frictionless intake form acting as the primary conversion engine. Use soft internal shadows for the input fields.
+42. Content: Include fields for Name, Business Name, Email, and Phone. The form tag MUST be staged for a POST method (ready for a Web3Forms endpoint) so we can route it to our backend automations.
+43. 44. 6. Clarity (FAQ Section)
+45. Design Intent: Use the native HTML <details> and <summary> tags to create a sleek, CSS-only accordion. It should feel like a modern help-center interface.
+46. Content: * Q: How long will it take to get my website up and running? A: We move fast. Once you complete your quick onboarding process—where you provide your logo, business details, and service menu—your brand-new digital storefront will be fully deployed, optimized, and live within 48 hours. No endless design revisions, no waiting weeks for an agency to call you back.
+47. Q: Is there a contract? A: No long-term lock-ins. Your $279/mo concierge retainer is strictly month-to-month. We believe in earning your business every thirty days by keeping your site fast, secure, and actively growing in local search rankings. You can cancel at any time with zero hidden fees.
+48. Q: What if I already have my own website? A: Most of our clients come to us precisely because their old website is slow, outdated, or failing to capture leads. We don't waste your time or money trying to patch up old, broken code. Instead, we build you a brand-new, high-converting digital storefront and seamlessly point your existing domain name (your web address) to it. You keep your established URL, but get a massive upgrade in speed, security, and design.
+49. Q: How much can I customize? A: Your site will look and feel 100% like your business. We customize the framework with your unique brand colors, logo, typography, team photos, and specific service offerings. However, to guarantee sub-second load times and perfect mobile responsiveness, the core structural layout of our industry frameworks remains locked. This ensures you get a battle-tested design proven to convert, without the bloated costs of a custom agency build. Plus, your monthly retainer includes unlimited minor edits to text and images whenever you need them.
+50. 51. 7. Footer Section
+52. Design Intent: A minimalist, professional bookend for the page. Return to the #16110a background color to anchor the design. Links should have a crisp hover effect using the #21c3d8 accent.
+53. Content: Include a copyright line ("© [Current Year] Digital Downtown Main"), standard clean text links for "Privacy Policy" and "Terms of Service", and a discreet "Powered by The Prompt Doctor Agency" attribution link in the bottom corner.
+54. 55. Output Requirements: Provide the complete, unified HTML in one block, and the complete, unified CSS in a second block.
+
+
+Privacy / ToS
+Privacy Policy for Digital Downtown Main
+Effective Date: 01-01-2026
+1. Information We Collect We collect information that you voluntarily provide to us when you express an interest in obtaining information about us or our services. The personal information that we collect depends on the context of your interactions with us and the site. The personal information we collect may include:
+* Contact Data: First and last name, email address, phone number, and business name.
+* Technical Data: When you visit our website, our servers automatically record information that your browser sends. This may include your IP address, browser type, device specifications, and operating system.
+2. How We Use Your Information We use personal information collected via our website for a variety of business purposes described below:
+* To fulfill and manage requests for quotes, consultations, and digital storefront deployments.
+* To facilitate account creation and the ongoing management of your monthly concierge retainer.
+* To send administrative information to you, such as changes to our terms, conditions, and policies.
+* To deliver targeted marketing and promotional communications, provided this is in accordance with your marketing preferences.
+3. Will Your Information Be Shared with Anyone? We only share information with your consent, to comply with laws, to provide you with services, to protect your rights, or to fulfill business obligations. We utilize enterprise-grade third-party vendors (such as Netlify for global edge hosting and Web3Forms for secure lead routing) to facilitate our services. We do not, and will never, sell your personal data or your local leads to third parties.
+4. How Long Do We Keep Your Information? We will only keep your personal information for as long as it is necessary for the purposes set out in this privacy notice, unless a longer retention period is required or permitted by law (such as tax, accounting, or other legal requirements).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Terms of Service for Digital Downtown Main
+Effective Date: 01-01-2026
+1. Agreement to Terms These Terms of Service constitute a legally binding agreement made between you and Digital Downtown Main concerning your access to and use of our digital storefront services. By engaging our services, you agree that you have read, understood, and agreed to be bound by all of these Terms of Service.
+2. Services Provided Digital Downtown Main provides tailored digital architecture, SEO/GEO optimization, and automated conversion engines for local businesses. Upon completion of onboarding, initial storefronts are deployed within 48 hours.
+3. Payment and Fees
+* Setup Fee: A flat, one-time setup fee of $500 is required to initiate the build and deployment of your digital storefront.
+* Concierge Retainer: Ongoing hosting, security, and maintenance are provided via a $279/month concierge retainer.
+* Billing Cycle: The monthly retainer is billed on a month-to-month basis. There are no long-term contracts or hidden fees.
+4. Cancellation and Modifications You may cancel your concierge retainer at any time by notifying us. Upon cancellation, your digital storefront will be taken offline at the end of your current billing cycle. Because we operate on a strict month-to-month basis to earn your business, there are no cancellation penalties. Your monthly retainer includes unlimited minor edits to text and images.
+5. Intellectual Property Rights You retain 100% ownership of your business name, logos, provided imagery, and brand identity. Digital Downtown Main retains the intellectual property rights to the underlying structural code, CSS frameworks, and AI-optimized layouts used to build the digital storefront. Upon cancellation, the underlying proprietary code remains the property of Digital Downtown Main.
+6. Warranties and Liability While our digital storefronts are engineered to maximize local search rankings and conversion rates, Digital Downtown Main cannot guarantee specific metrics, Google rankings, or lead volumes. We guarantee 99.9% uptime via our enterprise edge network, but we are not liable for business losses due to unforeseen technical outages beyond our direct control.

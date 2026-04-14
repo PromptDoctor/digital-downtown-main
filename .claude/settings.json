@@ -14,7 +14,8 @@
       "Bash(npx --yes puppeteer --version)",
       "Bash(npx playwright:*)",
       "Read(//c/Program Files/Google/Chrome/Application/**)",
-      "Read(//c/Program Files/Microsoft/Edge/Application/**)"
+      "Read(//c/Program Files/Microsoft/Edge/Application/**)",
+      "Bash('C:/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless=new --disable-gpu --window-size=420,700 --virtual-time-budget=3000 '--screenshot=d:/Digital Downtown Main/DDM Website/screenshots/_ob-gate.png' file:///d:/Digital%20Downtown%20Main/DDM%20Website/onboarding.html)"
     ]
   }
 }

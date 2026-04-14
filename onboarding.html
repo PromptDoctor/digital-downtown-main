@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Onboarding Portal | Digital Downtown Main</title>
+  <!-- Kept off search engines — private portal -->
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* ── TOKENS ────────────────────────────────────────────────────── */
+    :root {
+      --bg:            #16110a;
+      --card:          #022b3e;
+      --accent:        #21c3d8;
+      --accent-dim:    rgba(33, 195, 216, 0.10);
+      --accent-border: rgba(33, 195, 216, 0.28);
+      --text:          #ffffff;
+      --text-muted:    rgba(255, 255, 255, 0.65);
+      --text-subtle:   rgba(255, 255, 255, 0.38);
+      --border:        rgba(255, 255, 255, 0.09);
+      --border-focus:  rgba(33, 195, 216, 0.55);
+      --input-bg:      rgba(255, 255, 255, 0.04);
+      --shadow-card:   0 8px 40px rgba(0, 0, 0, 0.55);
+      --error:         #ff6b6b;
+      --warn:          #ffa94d;
+      --ok:            #69db7c;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --font-head:     'TT Norms', 'Arial', sans-serif;
+      --font-body:     'Arial MT Pro', 'Arial', sans-serif;
+      --ease:          0.22s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── GATE ───────────────────────────────────────────────────────── */
+    .gate {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1.5rem;
+    }
+
+    .gate-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 2.25rem 2.5rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+
+    .gate-logo { height: 46px; margin-bottom: 2rem; }
+
+    .gate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 99px;
+      padding: 0.3rem 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .gate-card h1 {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .gate-card > p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+      line-height: 1.65;
+    }
+
+    .gate-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 0.18em;
+      outline: none;
+      transition: border-color var(--ease), box-shadow var(--ease);
+      margin-bottom: 0.875rem;
+      font-family: var(--font-body);
+    }
+
+    .gate-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(33, 195, 216, 0.12);
+    }
+
+    .gate-input.shake {
+      animation: shake 0.4s ease;
+      border-color: var(--error) !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%  { transform: translateX(-8px); }
+      40%  { transform: translateX(8px); }
+      60%  { transform: translateX(-5px); }
+      80%  { transform: translateX(5px); }
+    }
+
+    .gate-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--accent);
+      color: #16110a;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: opacity var(--ease), transform var(--ease);
+    }
+
+    .gate-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .gate-btn:active { transform: translateY(0); }
+
+    .gate-error {
+      margin-top: 0.875rem;
+      font-size: 0.8rem;
+      color: var(--error);
+      display: none;
+      line-height: 1.5;
+    }
+
+    .gate-error a { color: var(--accent); }
+
+    /* ── APP SHELL ──────────────────────────────────────────────────── */
+    .app { display: none; }
+    .app.open { display: block; }
+
+    /* Sticky header */
+    .form-header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(2, 43, 62, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-logo { height: 34px; }
+
+    .header-meta { flex: 1; }
+
+    .header-meta h2 {
+      font-family: var(--font-head);
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    .header-meta p {
+      font-size: 0.7rem;
+      color: var(--text-subtle);
+    }
+
+    .header-step {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-subtle);
+      white-space: nowrap;
+    }
+
+    /* Progress */
+    .progress-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem 0;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 0.625rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 25%;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .prog-lbl {
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      transition: color var(--ease);
+    }
+
+    .prog-lbl.on { color: var(--accent); }
+
+    /* ── STEPS ──────────────────────────────────────────────────────── */
+    .steps-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 7rem;
+    }
+
+    .step { display: none; }
+    .step.on { display: block; }
+
+    /* Step header */
+    .step-eyebrow {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .step h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.12;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.25rem;
+      line-height: 1.65;
+    }
+
+    /* ── FORM FIELDS ────────────────────────────────────────────────── */
+    .fg { margin-bottom: 1.875rem; }
+
+    .fg label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .fg label .req { color: var(--accent); margin-left: 2px; }
+    .fg label .opt { color: var(--text-subtle); font-weight: 400; font-size: 0.75rem; margin-left: 5px; }
+
+    .help { font-size: 0.775rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.55; }
+
+    /* callout boxes */
+    .callout {
+      font-size: 0.775rem;
+      line-height: 1.55;
+      border-radius: var(--radius-sm);
+      padding: 0.625rem 0.875rem;
+      margin-bottom: 0.625rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .callout.info  { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); }
+    .callout.warn  { background: rgba(255,169,77,0.08); border: 1px solid rgba(255,169,77,0.25); color: var(--warn); }
+    .callout.ok    { background: rgba(105,219,124,0.07); border: 1px solid rgba(105,219,124,0.2); color: var(--ok); }
+    .callout svg   { flex-shrink: 0; margin-top: 1px; }
+
+    /* Inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      padding: 0.8125rem 1rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      outline: none;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.22);
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.22), 0 0 0 3px rgba(33,195,216,0.10);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-subtle); }
+
+    input.err, textarea.err { border-color: var(--error) !important; }
+
+    textarea {
+      resize: vertical;
+      min-height: 112px;
+      line-height: 1.65;
+    }
+
+    /* Char counter */
+    .char-counter { font-size: 0.7rem; color: var(--text-subtle); text-align: right; margin-top: 0.25rem; }
+
+    /* Password reveal */
+    .pass-wrap { position: relative; }
+    .pass-wrap input { padding-right: 2.75rem; }
+    .pass-reveal {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-subtle);
+      padding: 0.25rem;
+      line-height: 0;
+      transition: color var(--ease);
+    }
+    .pass-reveal:hover { color: var(--text); }
+
+    /* ── FILE DROP ZONE ─────────────────────────────────────────────── */
+    .file-zone {
+      position: relative;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .file-zone:hover, .file-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* The native file input covers the entire zone invisibly */
+    .file-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      /* Reset styles that the global rule above would apply */
+      padding: 0;
+      background: none;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .file-zone-icon {
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 0.875rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .file-zone-primary { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .file-zone-primary span { color: var(--accent); }
+    .file-zone-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+    .file-list {
+      margin-top: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .file-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 6px;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    .file-pill svg { color: var(--accent); flex-shrink: 0; }
+    .file-pill .file-size { margin-left: auto; opacity: 0.5; }
+
+    /* ── SERVICES TAGS ──────────────────────────────────────────────── */
+    .tags-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.625rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      min-height: 48px;
+      cursor: text;
+      transition: border-color var(--ease), box-shadow var(--ease);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.22);
+    }
+
+    .tags-box:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.22), 0 0 0 3px rgba(33,195,216,0.10);
+    }
+
+    .tags-box.err { border-color: var(--error) !important; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 0.775rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .chip-x {
+      cursor: pointer;
+      opacity: 0.65;
+      font-size: 1rem;
+      line-height: 1;
+      transition: opacity var(--ease);
+    }
+    .chip-x:hover { opacity: 1; }
+
+    .tag-typer {
+      flex: 1;
+      min-width: 160px;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      padding: 0.25rem 0.375rem;
+      box-shadow: none;
+    }
+
+    .tags-hint { font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.35rem; }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── BOTTOM NAV ─────────────────────────────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(22, 17, 10, 0.95);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      z-index: 200;
+    }
+
+    .btn-back {
+      padding: 0.8125rem 1.25rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color var(--ease), color var(--ease);
+      white-space: nowrap;
+    }
+
+    .btn-back:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+    .btn-advance {
+      flex: 1;
+      padding: 0.8125rem 1rem;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #16110a;
+      font-family: var(--font-head);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity var(--ease), transform var(--ease);
+    }
+
+    .btn-advance:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-advance:active { transform: translateY(0); }
+    .btn-advance:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* ── SUCCESS ────────────────────────────────────────────────────── */
+    .success-wrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 75vh;
+      padding: 3rem 1.5rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .success-wrap.show { display: flex; }
+
+    .success-ring {
+      width: 84px;
+      height: 84px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .success-wrap h2 {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .success-wrap p {
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .success-accent { color: var(--accent); font-weight: 700; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .progress-labels { display: none; }
+      .header-meta p   { display: none; }
+      .gate-card       { padding: 2.25rem 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PASSWORD GATE
+     Default access code: DDM2026
+     To change: find ACCESS_CODE in the <script> block at the bottom.
+═══════════════════════════════════════════════════════════════════ -->
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <img src="Digital Down no BG.svg" alt="Digital Downtown Main" class="gate-logo">
+    <div class="gate-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Private Portal
+    </div>
+    <h1>Client Onboarding</h1>
+    <p>This portal is for Digital Downtown Main clients only. Enter the access code from your welcome email to get started.</p>
+    <input
+      type="password"
+      id="gate-input"
+      class="gate-input"
+      placeholder="Access Code"
+      autocomplete="off"
+      maxlength="30"
+      aria-label="Access code"
+    >
+    <button class="gate-btn" id="gate-btn" onclick="checkGate()">Enter Portal →</button>
+    <p class="gate-error" id="gate-error">
+      Incorrect code. Double-check your welcome email or contact
+      <a href="mailto:bret@digitaldowntownmain.com">bret@digitaldowntownmain.com</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MAIN APPLICATION
+═══════════════════════════════════════════════════════════════════ -->
+<div id="app" class="app" aria-label="Client onboarding portal">
+
+  <!-- Sticky header -->
+  <header class="form-header">
+    <img src="Digital Down no BG.svg" alt="DDM" class="header-logo">
+    <div class="header-meta">
+      <h2>Onboarding Portal</h2>
+      <p>Digital Downtown Main &bull; Confidential</p>
+    </div>
+    <span class="header-step" id="header-step">Step 1 of 4</span>
+  </header>
+
+  <!-- Progress bar -->
+  <div class="progress-shell">
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+    <div class="progress-labels" aria-hidden="true">
+      <span class="prog-lbl on"  id="pl-1">Brand Identity</span>
+      <span class="prog-lbl"     id="pl-2">Media &amp; Photos</span>
+      <span class="prog-lbl"     id="pl-3">Business Data</span>
+      <span class="prog-lbl"     id="pl-4">Tech &amp; Routing</span>
+    </div>
+  </div>
+
+  <!-- ─── FORM ─────────────────────────────────────────────────────── -->
+  <!--
+    NOTE ON FILE UPLOADS: Web3Forms supports file attachments (multipart/form-data)
+    on their Pro plan (up to 25 MB per submission). For larger photo sets,
+    a Google Drive/Dropbox link field is included as an alternative.
+    Replace YOUR_WEB3FORMS_ACCESS_KEY_HERE with your key from web3forms.com
+  -->
+  <form id="ob-form" method="POST" action="https://api.web3forms.com/submit" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="access_key"  value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject"     value="New Client Onboarding — Digital Downtown Main">
+    <input type="hidden" name="from_name"   value="DDM Onboarding Portal">
+    <input type="checkbox" name="botcheck"  style="display:none" tabindex="-1">
+
+    <div class="steps-shell">
+
+      <!-- ══════════════════════════════════════════════════
+           STEP 1 — BRAND IDENTITY
+      ══════════════════════════════════════════════════ -->
+      <div class="step on" id="step-1">
+
+        <span class="step-eyebrow">Step 1 of 4</span>
+        <h2>Brand Identity</h2>
+        <p class="step-desc">Your visual DNA. We use these assets to build a storefront that is unmistakably, 100% yours.</p>
+
+        <!-- Logo Upload -->
+        <div class="fg">
+          <label for="logo-files">Logo Files <span class="req">*</span></label>
+          <p class="help">Upload <strong>both primary and secondary</strong> logo variations. Files must have a transparent background. Accepted formats: <strong>.PNG, .SVG, or .AI</strong></p>
+          <div class="file-zone" id="zone-logo">
+            <input
+              type="file"
+              id="logo-files"
+              name="logo_files"
+              accept=".png,.svg,.ai,image/png,image/svg+xml"
+              multiple
+              required
+            >
+            <div class="file-zone-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <p class="file-zone-primary"><span>Click to upload</span> or drag &amp; drop</p>
+            <p class="file-zone-sub">.PNG (transparent bg) &nbsp;·&nbsp; .SVG &nbsp;·&nbsp; .AI &nbsp;|&nbsp; Primary + Secondary variations</p>
+          </div>
+          <div class="file-list" id="list-logo"></div>
+        </div>
+
+        <!-- Brand Colors -->
+        <div class="fg">
+          <label for="brand-colors">Brand Hex Colors <span class="opt">(optional)</span></label>
+          <p class="help">Enter your exact hex codes separated by commas — e.g. <code style="color:var(--accent);font-size:0.8em">#FF5733, #1A1A2E</code>. Don't have them? No problem — our team will extract the precise shades directly from your uploaded logo files.</p>
+          <input type="text" id="brand-colors" name="brand_colors" placeholder="#FFFFFF, #1A1A2E, #FF5733…" autocomplete="off">
+        </div>
+
+        <!-- Fonts -->
+        <div class="fg">
+          <label for="brand-fonts">Brand Fonts <span class="opt">(optional)</span></label>
+          <p class="help">List any fonts used in your existing branding (e.g. <em>Montserrat Bold, Playfair Display</em>). If left blank, our team will pair high-converting, mobile-optimized typefaces that complement your visual identity.</p>
+          <input type="text" id="brand-fonts" name="brand_fonts" placeholder="e.g. Montserrat, Playfair Display — or leave blank" autocomplete="off">
+        </div>
+
+      </div><!-- /step-1 -->
+
+
+      <!-- ══════════════════════════════════════════════════
+           STEP 2 — MEDIA & PHOTOS
+      ══════════════════════════════════════════════════ -->
+      <div class="step" id="step-2">
+
+        <span class="step-eyebrow">Step 2 of 4</span>
+        <h2>Media &amp; Photos</h2>
+        <p class="step-desc">The single most powerful conversion driver on your site. Authentic photos of real work will always outperform stock imagery.</p>
+
+        <!-- In-Action Shots -->
+        <div class="fg">
+          <label for="action-shots">In-Action Shots <span class="req">*</span> <span class="opt">(3–5 photos)</span></label>
+          <p class="help">Clear, well-lit photos of your <strong>team on the job</strong> — branded vehicles, equipment, workspace, or your craft in progress.</p>
+          <div class="file-zone" id="zone-action">
+            <input type="file" id="action-shots" name="action_shots" accept="image/*" multiple required>
+            <div class="file-zone-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <p class="file-zone-primary"><span>Click to upload</span> or drag &amp; drop</p>
+            <p class="file-zone-sub">JPEG, PNG, HEIC &nbsp;|&nbsp; 3–5 photos &nbsp;·&nbsp; Max 10 MB each</p>
+          </div>
+          <div class="file-list" id="list-action"></div>
+        </div>
+
+        <!-- Portfolio Showcase -->
+        <div class="fg">
+          <label for="portfolio-shots">Portfolio Showcase <span class="opt">(5–10 photos, strongly recommended)</span></label>
+          <div class="callout warn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span><strong>Real photos convert significantly faster than stock.</strong> "Before &amp; after" shots are exceptionally effective at building instant trust with St. Louis customers.</span>
+          </div>
+          <p class="help">Completed projects, before &amp; after transformations, or your strongest finished work. The more real-world the better.</p>
+          <div class="file-zone" id="zone-portfolio">
+            <input type="file" id="portfolio-shots" name="portfolio_photos" accept="image/*" multiple>
+            <div class="file-zone-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </div>
+            <p class="file-zone-primary"><span>Click to upload</span> or drag &amp; drop</p>
+            <p class="file-zone-sub">JPEG, PNG, HEIC &nbsp;|&nbsp; 5–10 photos &nbsp;·&nbsp; Before &amp; after preferred</p>
+          </div>
+          <div class="file-list" id="list-portfolio"></div>
+        </div>
+
+        <!-- Drive link alternative -->
+        <div class="fg">
+          <label for="drive-link">Google Drive or Dropbox Link <span class="opt">(optional)</span></label>
+          <p class="help">Have a large folder of assets? Paste a shared link here as an alternative — or in addition — to direct upload.</p>
+          <input type="url" id="drive-link" name="cloud_folder_link" placeholder="https://drive.google.com/drive/folders/…">
+        </div>
+
+      </div><!-- /step-2 -->
+
+
+      <!-- ══════════════════════════════════════════════════
+           STEP 3 — BUSINESS & SEO DATA
+      ══════════════════════════════════════════════════ -->
+      <div class="step" id="step-3">
+
+        <span class="step-eyebrow">Step 3 of 4</span>
+        <h2>Business &amp; SEO Data</h2>
+        <p class="step-desc">The operational foundation of your storefront. Accuracy here directly determines your local search rankings.</p>
+
+        <!-- NAP warning -->
+        <div class="callout info">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><strong>NAP Consistency is Critical.</strong> Your Business Name, Address, and Phone must be an <strong>exact character-for-character match</strong> to your Google Business Profile. Any inconsistency — even abbreviations — can damage your local SEO rankings.</span>
+        </div>
+
+        <!-- Business Name -->
+        <div class="fg" style="margin-top:1.5rem">
+          <label for="biz-name">Business Name <span class="req">*</span></label>
+          <input type="text" id="biz-name" name="business_name" placeholder="e.g. Smith's Premium Auto Detail" required autocomplete="organization">
+        </div>
+
+        <!-- Address -->
+        <div class="fg">
+          <label for="biz-address">Address or Service Areas <span class="req">*</span></label>
+          <p class="help">Physical address — or list the cities and zip codes you serve if you are mobile-based.</p>
+          <input type="text" id="biz-address" name="business_address" placeholder="e.g. 123 Main St, St. Louis, MO 63101 — or — St. Louis, Chesterfield, O'Fallon" required>
+        </div>
+
+        <!-- Phone -->
+        <div class="fg">
+          <label for="biz-phone">Phone Number <span class="req">*</span></label>
+          <input type="tel" id="biz-phone" name="business_phone" placeholder="(314) 000-0000" required autocomplete="tel">
+        </div>
+
+        <hr class="divider">
+
+        <!-- Core Services — Tag input -->
+        <div class="fg">
+          <label>Core Services <span class="req">*</span></label>
+          <p class="help">Add your <strong>top 3–5 most profitable service offerings</strong>. These anchor your site's SEO architecture, service pages, and local keyword targeting. Type a service and press <strong>Enter</strong> or comma to add it.</p>
+          <div class="tags-box" id="tags-box" onclick="document.getElementById('tag-typer').focus()">
+            <input type="text" class="tag-typer" id="tag-typer" placeholder="Type a service, press Enter…" autocomplete="off" aria-label="Add a service">
+          </div>
+          <p class="tags-hint">e.g. Full Interior Detail &nbsp;·&nbsp; Paint Correction &nbsp;·&nbsp; Ceramic Coating &nbsp;·&nbsp; Fleet Service</p>
+          <!-- Hidden field carries the tag values to Web3Forms -->
+          <input type="hidden" id="services-val" name="core_services">
+        </div>
+
+        <!-- Elevator Pitch -->
+        <div class="fg">
+          <label for="elevator-pitch">Elevator Pitch <span class="req">*</span></label>
+          <p class="help">In <strong>2–3 sentences</strong>: what makes you the best choice in your market? Be specific — name your city, your specialty, your competitive edge. <strong>This copy will directly power your site's SEO metadata, Google Business description, and primary hero headline.</strong></p>
+          <textarea
+            id="elevator-pitch"
+            name="elevator_pitch"
+            placeholder="e.g. St. Louis's only mobile detail crew certified in Ceramic Pro coatings. We bring showroom results to your driveway — same-day booking, zero hassle, guaranteed results or we come back."
+            required
+            maxlength="500"
+          ></textarea>
+          <p class="char-counter"><span id="pitch-count">0</span> / 500 characters</p>
+        </div>
+
+      </div><!-- /step-3 -->
+
+
+      <!-- ══════════════════════════════════════════════════
+           STEP 4 — TECHNICAL ACCESS & ROUTING
+      ══════════════════════════════════════════════════ -->
+      <div class="step" id="step-4">
+
+        <span class="step-eyebrow">Step 4 of 4</span>
+        <h2>Technical Access &amp; Routing</h2>
+        <p class="step-desc">The final step. This is how we connect your domain to our enterprise hosting network and route new leads directly to your inbox.</p>
+
+        <!-- Security callout -->
+        <div class="callout ok">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>All data is transmitted via <strong>256-bit encrypted HTTPS</strong> directly into your private project file. Your credentials are never stored in a database, shared with any third party, or accessible to anyone outside your dedicated project manager at Digital Downtown Main.</span>
+        </div>
+
+        <!-- Registrar Name -->
+        <div class="fg" style="margin-top:1.5rem">
+          <label for="registrar">Domain Registrar <span class="req">*</span></label>
+          <p class="help">Where your domain name is registered. We need to update your DNS records to route your domain to our Netlify enterprise edge network. Common registrars: <strong>GoDaddy, Namecheap, Google Domains, Squarespace, Network Solutions.</strong></p>
+          <input type="text" id="registrar" name="registrar_name" placeholder="e.g. GoDaddy, Namecheap, Google Domains…" required>
+        </div>
+
+        <!-- Registrar Username -->
+        <div class="fg">
+          <label for="reg-user">Registrar Login — Username or Email <span class="req">*</span></label>
+          <input type="text" id="reg-user" name="registrar_username" placeholder="email@yourdomain.com" required autocomplete="off" spellcheck="false">
+        </div>
+
+        <!-- Registrar Password -->
+        <div class="fg">
+          <label for="reg-pass">Registrar Login — Password <span class="req">*</span></label>
+          <div class="pass-wrap">
+            <input type="password" id="reg-pass" name="registrar_password" placeholder="Your registrar account password" required autocomplete="new-password">
+            <button type="button" class="pass-reveal" onclick="togglePass()" aria-label="Toggle password visibility">
+              <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Lead Destination Email -->
+        <div class="fg">
+          <label for="lead-email">Lead Destination Email <span class="req">*</span></label>
+          <p class="help">Every new customer quote request and contact form submission from your website will be delivered to this address. Use an inbox you check daily.</p>
+          <input type="email" id="lead-email" name="lead_destination_email" placeholder="jane@yourbusiness.com" required autocomplete="email">
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="fg">
+          <label for="extra-notes">Anything Else We Should Know? <span class="opt">(optional)</span></label>
+          <p class="help">Competitors to stand apart from, booking platforms to integrate (e.g. Housecall Pro, Jobber), specific pages or features requested, or any other context for your build.</p>
+          <textarea id="extra-notes" name="additional_notes" placeholder="e.g. We use Housecall Pro for scheduling. Our main competitor is X. We'd love a dedicated 'Fleet Services' page…"></textarea>
+        </div>
+
+      </div><!-- /step-4 -->
+
+    </div><!-- /steps-shell -->
+  </form>
+
+  <!-- Success screen -->
+  <div class="success-wrap" id="success-wrap">
+    <div class="success-ring">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#21c3d8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <h2>Assets Received.</h2>
+    <p>
+      Your onboarding submission has been delivered to the Digital Downtown Main team.
+      We will review your assets and be in touch within <strong class="success-accent">one business day</strong>
+      to kick off your build.<br><br>
+      Expected go-live: <span class="success-accent">within 48 hours of this submission.</span>
+    </p>
+  </div>
+
+  <!-- Sticky nav -->
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Form navigation">
+    <button class="btn-back" id="btn-back" onclick="prevStep()" style="display:none">← Back</button>
+    <button class="btn-advance" id="btn-advance" onclick="advance()">Continue →</button>
+  </nav>
+
+</div><!-- /app -->
+
+
+<script>
+  // ═══════════════════════════════════════════════════════════════════
+  //  CONFIGURATION
+  //  Change ACCESS_CODE to whatever passphrase you send clients.
+  // ═══════════════════════════════════════════════════════════════════
+  const ACCESS_CODE = 'DDM2026';
+
+  // ── GATE ────────────────────────────────────────────────────────────
+  const gateInput = document.getElementById('gate-input');
+  const gateError = document.getElementById('gate-error');
+
+  function checkGate() {
+    if (gateInput.value.trim() === ACCESS_CODE) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('app').classList.add('open');
+    } else {
+      gateError.style.display = 'block';
+      gateInput.value = '';
+      gateInput.classList.add('shake');
+      gateInput.addEventListener('animationend', () => gateInput.classList.remove('shake'), { once: true });
+      gateInput.focus();
+    }
+  }
+
+  gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
+
+  // ── STEP STATE ──────────────────────────────────────────────────────
+  let step = 1;
+  const TOTAL = 4;
+
+  function syncUI() {
+    // Steps
+    for (let i = 1; i <= TOTAL; i++) {
+      document.getElementById(`step-${i}`).classList.toggle('on', i === step);
+      document.getElementById(`pl-${i}`).classList.toggle('on', i === step);
+    }
+
+    // Progress fill
+    document.getElementById('prog-fill').style.width = `${(step / TOTAL) * 100}%`;
+
+    // Header counter
+    document.getElementById('header-step').textContent = `Step ${step} of ${TOTAL}`;
+
+    // Back button
+    document.getElementById('btn-back').style.display = step > 1 ? 'block' : 'none';
+
+    // Advance button label
+    const adv = document.getElementById('btn-advance');
+    adv.textContent = step === TOTAL ? 'Submit Assets →' : 'Continue →';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function advance() {
+    if (!validateStep()) return;
+    if (step < TOTAL) { step++; syncUI(); }
+    else { submitForm(); }
+  }
+
+  function prevStep() {
+    if (step > 1) { step--; syncUI(); }
+  }
+
+  // ── VALIDATION ──────────────────────────────────────────────────────
+  function validateStep() {
+    const stepEl = document.getElementById(`step-${step}`);
+    let ok = true;
+
+    // Standard required fields
+    stepEl.querySelectorAll('[required]').forEach(el => {
+      if (!el.value.trim()) {
+        el.classList.add('err');
+        if (ok) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        ok = false;
+      } else {
+        el.classList.remove('err');
+      }
+    });
+
+    // Tags (step 3 only)
+    if (step === 3) {
+      const box = document.getElementById('tags-box');
+      const val = document.getElementById('services-val').value;
+      if (!val.trim()) {
+        box.classList.add('err');
+        if (ok) { document.getElementById('tag-typer').focus(); }
+        ok = false;
+      } else {
+        box.classList.remove('err');
+      }
+    }
+
+    if (!ok) {
+      // Flash the step heading red briefly
+      const h2 = stepEl.querySelector('h2');
+      const orig = h2.style.color;
+      h2.style.color = 'var(--error)';
+      h2.style.transition = 'color 0.6s';
+      setTimeout(() => { h2.style.color = orig; }, 1000);
+    }
+    return ok;
+  }
+
+  // Remove error styling on user input
+  document.addEventListener('input', e => {
+    if (e.target.matches('input, textarea')) e.target.classList.remove('err');
+  });
+
+  // ── FORM SUBMISSION ─────────────────────────────────────────────────
+  async function submitForm() {
+    const adv = document.getElementById('btn-advance');
+    adv.textContent = 'Submitting…';
+    adv.disabled = true;
+
+    const form   = document.getElementById('ob-form');
+    const formData = new FormData(form); // multipart/form-data for file uploads
+
+    try {
+      const res    = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        form.style.display = 'none';
+        document.getElementById('bottom-nav').style.display = 'none';
+        document.getElementById('success-wrap').classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        adv.textContent = 'Submit Assets →';
+        adv.disabled = false;
+        showSubmitError(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      adv.textContent = 'Submit Assets →';
+      adv.disabled = false;
+      showSubmitError('Network error. Check your connection and try again.');
+    }
+  }
+
+  function showSubmitError(msg) {
+    let el = document.getElementById('submit-error');
+    if (!el) {
+      el = document.createElement('p');
+      el.id = 'submit-error';
+      el.style.cssText = 'color:var(--error);font-size:.8rem;margin-top:.75rem;text-align:center;padding:.6rem 1rem;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);border-radius:8px;';
+      document.getElementById('bottom-nav').prepend(el);
+    }
+    el.textContent = msg;
+  }
+
+  // ── FILE DROP ZONES ─────────────────────────────────────────────────
+  function wireZone(zoneId, inputId, listId) {
+    const zone  = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const list  = document.getElementById(listId);
+
+    input.addEventListener('change', () => renderList(input.files, list));
+
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('over');
+      renderList(e.dataTransfer.files, list);
+    });
+  }
+
+  function renderList(files, listEl) {
+    listEl.innerHTML = '';
+    Array.from(files).forEach(f => {
+      const pill = document.createElement('div');
+      pill.className = 'file-pill';
+      pill.innerHTML = `
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+          <polyline points="13 2 13 9 20 9"/>
+        </svg>
+        <span>${f.name}</span>
+        <span class="file-size">${(f.size / 1024).toFixed(0)} KB</span>
+      `;
+      listEl.appendChild(pill);
+    });
+  }
+
+  wireZone('zone-logo',      'logo-files',      'list-logo');
+  wireZone('zone-action',    'action-shots',    'list-action');
+  wireZone('zone-portfolio', 'portfolio-shots', 'list-portfolio');
+
+  // ── SERVICES TAGS ───────────────────────────────────────────────────
+  const tagStore = [];
+  const typer    = document.getElementById('tag-typer');
+  const tagsBox  = document.getElementById('tags-box');
+  const tagsVal  = document.getElementById('services-val');
+
+  typer.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ',') && typer.value.trim()) {
+      e.preventDefault();
+      addChip(typer.value.replace(',', '').trim());
+    }
+    if (e.key === 'Backspace' && !typer.value && tagStore.length) {
+      removeChip(tagStore.length - 1);
+    }
+  });
+
+  // Also support tapping away on mobile (blur after comma)
+  typer.addEventListener('blur', () => {
+    if (typer.value.trim()) addChip(typer.value.trim());
+  });
+
+  function addChip(val) {
+    if (!val || tagStore.includes(val) || tagStore.length >= 5) return;
+    tagStore.push(val);
+    renderChips();
+    typer.value = '';
+    typer.placeholder = tagStore.length >= 5 ? 'Max 5 services reached' : 'Add another…';
+  }
+
+  function removeChip(i) {
+    tagStore.splice(i, 1);
+    renderChips();
+    typer.placeholder = 'Type a service, press Enter…';
+  }
+
+  function renderChips() {
+    tagsBox.querySelectorAll('.chip').forEach(el => el.remove());
+    tagStore.forEach((t, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.innerHTML = `${t}<span class="chip-x" onclick="removeChip(${i})" aria-label="Remove ${t}">×</span>`;
+      tagsBox.insertBefore(chip, typer);
+    });
+    tagsVal.value = tagStore.join(', ');
+    tagsBox.classList.remove('err');
+  }
+
+  // ── ELEVATOR PITCH COUNTER ──────────────────────────────────────────
+  document.getElementById('elevator-pitch').addEventListener('input', function () {
+    document.getElementById('pitch-count').textContent = this.value.length;
+  });
+
+  // ── PASSWORD REVEAL ─────────────────────────────────────────────────
+  function togglePass() {
+    const f = document.getElementById('reg-pass');
+    f.type = f.type === 'password' ? 'text' : 'password';
+    document.getElementById('eye-icon').style.opacity = f.type === 'text' ? '1' : '0.5';
+  }
+</script>
+
+</body>
+</html>
