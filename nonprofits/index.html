@@ -783,6 +783,47 @@
       margin-top: 16px;
     }
 
+    /* ── Form success state ─── */
+    .form-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 52px 32px;
+      gap: 18px;
+    }
+    .form-success.is-visible { display: flex; }
+    .success-icon {
+      width: 68px;
+      height: 68px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+    .form-success h3 {
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .form-success p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0;
+    }
+    .form-success .success-detail {
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+    }
+
     /* ══════════════════════════════════════════════════════════════
        FOOTER
     ══════════════════════════════════════════════════════════════ */
@@ -1148,10 +1189,9 @@
         <h2 class="section-heading" id="apply-heading">Claim one of the 10 free spots.</h2>
         <p class="section-intro" style="margin-bottom: 0;">Only 10 spots are available, awarded on a first-come, first-served basis. Complete the form below and we'll be in touch within one business day.</p>
 
-        <form class="apply-form" method="POST" action="https://api.web3forms.com/submit" aria-label="Nonprofit website application form">
+        <form class="apply-form" id="apply-form" method="POST" action="https://api.web3forms.com/submit" aria-label="Nonprofit website application form" novalidate>
           <input type="hidden" name="access_key" value="27562db3-3e80-4c4e-9df8-516c5b9b77c9">
           <input type="hidden" name="subject" value="New Nonprofit Website Application — Digital Downtown Main">
-          <input type="hidden" name="redirect" value="https://www.digitaldowntownmain.com">
 
           <div class="form-row">
             <div class="form-group">
@@ -1191,8 +1231,20 @@
             <textarea class="form-textarea" id="about" name="about" placeholder="What does your organization do? Who do you serve in the St. Louis area? What's your biggest challenge with your current online presence?" required></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary form-submit">Submit Application</button>
-          <p class="form-disclaimer">No spam, ever. We'll reply within one business day.</p>
+          <div id="form-fields">
+            <button type="submit" class="btn btn-primary form-submit" id="form-submit-btn">Submit Application</button>
+            <p class="form-disclaimer">No spam, ever. We'll reply within one business day.</p>
+          </div>
+
+          <!-- Success state (hidden until submission) -->
+          <div class="form-success" id="form-success" aria-live="polite">
+            <div class="success-icon" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3>Application Received!</h3>
+            <p>Thank you for applying. We'll verify your 501(c)(3) status and confirm your spot within <strong>one business day</strong>.</p>
+            <p class="success-detail">Keep an eye on <span id="success-email"></span> — that's where we'll be in touch.</p>
+          </div>
         </form>
       </div>
     </div>
@@ -1256,6 +1308,56 @@
         ? 'rgba(22, 17, 10, 0.97)'
         : 'rgba(22, 17, 10, 0.82)';
     }, { passive: true });
+
+    /* ── Application form — fetch submit ─── */
+    const applyForm   = document.getElementById('apply-form');
+    const submitBtn   = document.getElementById('form-submit-btn');
+    const formSuccess = document.getElementById('form-success');
+    const successEmail = document.getElementById('success-email');
+
+    applyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!applyForm.checkValidity()) {
+        applyForm.reportValidity();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        const data = new FormData(applyForm);
+        const res  = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: data
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          // Populate the email confirmation detail
+          const emailVal = applyForm.querySelector('#email').value;
+          if (emailVal) successEmail.textContent = emailVal;
+
+          // Hide all form fields, show success card
+          applyForm.querySelectorAll('.form-row, .form-group, #form-fields').forEach(el => {
+            el.style.display = 'none';
+          });
+          formSuccess.classList.add('is-visible');
+
+          // Scroll success card into view
+          formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Application';
+          alert('Something went wrong. Please try again or email us at bret@digitaldowntownmain.com.');
+        }
+      } catch {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
+        alert('Network error. Please check your connection and try again.');
+      }
+    });
   </script>
 
 </body>
